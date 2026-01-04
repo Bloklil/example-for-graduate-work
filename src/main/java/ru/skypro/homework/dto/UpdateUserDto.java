@@ -4,14 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "Register request")
-public class Register {
-
-    @Schema(description = "Username")
-    private String username;
-
-    @Schema(description = "Password")
-    private String password;
+@Schema(description = "Update user")
+public class UpdateUserDto {
 
     @Schema(description = "First name")
     private String firstName;
@@ -22,6 +16,4 @@ public class Register {
     @Schema(description = "Phone number")
     private String phone;
 
-    @Schema(description = "User role")
-    private Role role;
 }

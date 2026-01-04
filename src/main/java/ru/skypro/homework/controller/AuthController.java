@@ -1,13 +1,15 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.build.Plugin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import ru.skypro.homework.dto.IdDto;
 import ru.skypro.homework.dto.Login;
 import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.service.AuthService;
@@ -20,21 +22,29 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "Авторизация пользователя")
+    @ApiResponse(responseCode = "200", description = "успешная авторизация")
+    @ApiResponse(responseCode = "401", description = "не фортануло")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Login login) {
-        if (authService.login(login.getUsername(), login.getPassword())) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public IdDto login(@RequestBody Login login) {
+        boolean success = authService.login(login.getUsername(), login.getPassword());
+        if (!success) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+        return new IdDto(1);
     }
 
+    @Operation(summary = "регистрация пользователя")
+    @ApiResponse(responseCode = "201", description = "пользоватьель зарегистрирован")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Register register) {
-        if (authService.register(register)) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public IdDto register(@RequestBody Register register) {
+        boolean success = authService.register(register);
+
+        if (!success) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        return new IdDto(1);
     }
 }
