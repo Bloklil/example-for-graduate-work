@@ -57,7 +57,6 @@ public class AdController {
         return new AdsDto();
     }
 
-    @Operation(summary = "Update ad image")
     @PatchMapping("/{id}/image")
     public byte[] updateImage(@PathVariable Integer id, @RequestParam MultipartFile image) {
         return new byte[0];
