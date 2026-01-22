@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.skypro.homework.dto.IdDto;
 import ru.skypro.homework.dto.Login;
 import ru.skypro.homework.dto.Register;
+import ru.skypro.homework.entities.UserEntity;
+import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
 @Slf4j
@@ -21,6 +23,7 @@ import ru.skypro.homework.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserRepository userRepository;
 
     @Operation(summary = "Авторизация пользователя")
     @ApiResponse(responseCode = "200", description = "успешная авторизация")
@@ -31,7 +34,10 @@ public class AuthController {
         if (!success) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        return new IdDto(1);
+        UserEntity user = userRepository.findByEmail(login.getUsername())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Не найден"));
+        return new IdDto(user.getId());
     }
 
     @Operation(summary = "регистрация пользователя")
@@ -45,6 +51,10 @@ public class AuthController {
         if (!success) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return new IdDto(1);
+
+        UserEntity user = userRepository.findByEmail(register.getUsername())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Не найден"));
+        return new IdDto(user.getId());
     }
 }
