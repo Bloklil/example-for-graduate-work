@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -9,31 +10,37 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
+import ru.skypro.homework.service.AdService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/ads")
+@RequiredArgsConstructor
 public class AdController {
+
+    private final AdService adService;
 
     @Operation(summary = "получить всю ads")
     @GetMapping
     public AdsDto getAllAds() {
-        return new AdsDto();
+        return adService.getAllAds();
     }
 
     @Operation(summary = "Add ad")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public AdDto addAd(
-            @RequestPart("properties") CreateOrUpdateAdDto dto,
+            @ModelAttribute CreateOrUpdateAdDto dto,
             @RequestPart("image") MultipartFile image
-    ) {
-        return new AdDto();
+    ) throws IOException {
+        return adService.createAd(dto, image);
     }
 
     @Operation(summary = "Get ad")
     @GetMapping("/{id}")
     public ExtendedAdDto getAd(@PathVariable Integer id) {
-        return new ExtendedAdDto();
+        return adService.getAdById(id);
     }
 
     @Operation(summary = "Update ad")
@@ -42,24 +49,26 @@ public class AdController {
             @PathVariable Integer id,
             @RequestBody CreateOrUpdateAdDto dto
     ) {
-        return new AdDto();
+        return adService.updateAd(id, dto);
     }
 
     @Operation(summary = "Delete ad")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAd(@PathVariable Integer id) {
+        adService.deleteAd(id);
     }
 
     @Operation(summary = "Get my ads")
     @GetMapping("/me")
     public AdsDto getMyAds() {
-        return new AdsDto();
+        return adService.getAllAds();
     }
 
-    @PatchMapping("/{id}/image")
-    public byte[] updateImage(@PathVariable Integer id, @RequestParam MultipartFile image) {
-        return new byte[0];
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateImage(@PathVariable Integer id, @RequestPart("image") MultipartFile image)
+            throws IOException {
+        adService.updateAdImage(id, image);
     }
 
 }
