@@ -6,15 +6,22 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
+import ru.skypro.homework.service.CommentService;
 
 @RestController
 @RequestMapping("/ads")
 public class CommentController {
 
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
     @Operation(summary = "Get comments")
     @GetMapping("/{id}/comments")
     public CommentsDto getComments(@PathVariable Integer id) {
-        return new CommentsDto();
+        return commentService.getComments(id);
     }
 
     @Operation(summary = "Add comment")
@@ -23,7 +30,7 @@ public class CommentController {
             @PathVariable Integer id,
             @RequestBody CreateOrUpdateCommentDto dto
     ) {
-        return new CommentDto();
+        return commentService.createComment(id, dto);
     }
 
     @Operation(summary = "Update comment")
@@ -33,7 +40,7 @@ public class CommentController {
             @PathVariable Integer commentId,
             @RequestBody CreateOrUpdateCommentDto dto
     ) {
-        return new CommentDto();
+        return commentService.updateComment(adId, commentId, dto);
     }
 
     @Operation(summary = "Delete comment")
@@ -43,6 +50,9 @@ public class CommentController {
             @PathVariable Integer adId,
             @PathVariable Integer commentId
     ) {
+
+        commentService.deleteComment(adId, commentId);
+
     }
 
 }
