@@ -5,6 +5,7 @@ import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entities.CommentEntity;
 import ru.skypro.homework.entities.UserEntity;
+import ru.skypro.homework.utils.ImageUrlUtils;
 
 import java.time.Instant;
 
@@ -23,7 +24,7 @@ public class CommentMapper {
         if (author != null) {
             dto.setAuthor(author.getId());
             dto.setAuthorFirstName(author.getFirstName());
-            dto.setAuthorImage(author.getImage());
+            dto.setAuthorImage(ImageUrlUtils.createImageUrl(author.getImage()));
         }
         return dto;
     }

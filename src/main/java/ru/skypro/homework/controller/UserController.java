@@ -1,6 +1,8 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.UpdateUserDto;
@@ -11,13 +13,11 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@CrossOrigin(value = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @Operation(summary = "получить текущего user")
     @GetMapping("/me")
@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @Operation(summary = "обновить avatar")
-    @PatchMapping("/me/image")
-    public void updateImage(@RequestParam MultipartFile image) throws IOException {
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateImage(@RequestParam("image") MultipartFile image) throws IOException {
         userService.updateUserImage(image);
     }
 

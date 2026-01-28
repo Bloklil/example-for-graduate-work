@@ -6,6 +6,7 @@ import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entities.AdEntity;
 import ru.skypro.homework.entities.UserEntity;
+import ru.skypro.homework.utils.ImageUrlUtils;
 
 @Component
 public class AdMapper {
@@ -16,7 +17,7 @@ public class AdMapper {
         AdDto dto = new AdDto();
         dto.setPk(entity.getId());
         dto.setAuthor(entity.getAuthor().getId());
-        dto.setImage(entity.getImage());
+        dto.setImage(ImageUrlUtils.createImageUrl(entity.getImage()));
         dto.setPrice(entity.getPrice());
         dto.setTitle(entity.getTitle());
         return dto;
@@ -31,7 +32,7 @@ public class AdMapper {
         dto.setTitle(entity.getTitle());
         dto.setPrice(entity.getPrice());
         dto.setDescription(entity.getDescription());
-        dto.setImage(entity.getImage());
+        dto.setImage(ImageUrlUtils.createImageUrl(entity.getImage()));
 
         UserEntity author = entity.getAuthor();
         if (author != null) {

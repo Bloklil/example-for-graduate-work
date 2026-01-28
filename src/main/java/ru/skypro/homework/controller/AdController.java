@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
@@ -66,9 +67,11 @@ public class AdController {
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateImage(@PathVariable Integer id, @RequestPart("image") MultipartFile image)
-            throws IOException {
+    @Operation(summary = "Обновить изображение объявления")
+    public ResponseEntity<Void> updateImage(
+            @PathVariable Integer id,
+            @RequestPart("image") MultipartFile image) throws IOException {
         adService.updateAdImage(id, image);
+        return ResponseEntity.ok().build();
     }
-
 }

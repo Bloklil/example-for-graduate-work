@@ -15,36 +15,64 @@ import java.nio.file.Paths;
 public class FileServiceImpl implements FileService {
 
     private static final String IMAGE_DIR = "images";
+    private final Path imageDir;
+
+    public FileServiceImpl() throws IOException {
+        this.imageDir = Paths.get(IMAGE_DIR).toAbsolutePath().normalize();
+        Files.createDirectories(this.imageDir);
+        log.info("Image directory: {}", this.imageDir);
+    }
 
     @Override
     public String saveImage(MultipartFile image) throws IOException {
-        Files.createDirectories(Paths.get(IMAGE_DIR));
+        String originalFilename = image.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isEmpty()) {
+            throw new IllegalArgumentException("Original filename is empty");
+        }
 
-        String filename = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-        Path filePath = Paths.get(IMAGE_DIR, filename);
+        String safeFilename = System.currentTimeMillis() + "_" +
+                originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
+        Path filePath = this.imageDir.resolve(safeFilename);
 
         Files.write(filePath, image.getBytes());
-        log.info("Image saved: {}", filename);
+        log.info("Image saved: {}", safeFilename);
 
-        return filename;
+        return safeFilename;
     }
 
     @Override
     public byte[] getImage(String filename) throws IOException {
-        Path path = Paths.get(IMAGE_DIR, filename);
-        return Files.readAllBytes(path);
+        Path filePath = this.imageDir.resolve(filename).normalize();
+
+        if (!filePath.startsWith(this.imageDir)) {
+            throw new SecurityException("Access denied to file: " + filename);
+        }
+
+        if (!Files.exists(filePath)) {
+            throw new IOException("File not found: " + filename);
+        }
+
+        return Files.readAllBytes(filePath);
     }
 
     @Override
     public void deleteImage(String filename) throws IOException {
-        Path path = Paths.get(IMAGE_DIR, filename);
-        Files.deleteIfExists(path);
+        Path filePath = this.imageDir.resolve(filename).normalize();
+
+        // Проверка безопасности
+        if (!filePath.startsWith(this.imageDir)) {
+            throw new SecurityException("Access denied to file: " + filename);
+        }
+
+        Files.deleteIfExists(filePath);
         log.info("Image deleted: {}", filename);
     }
 
     @Override
     public String updateImage(String oldFilename, MultipartFile newImage) throws IOException {
-        deleteImage(oldFilename);
+        if (oldFilename != null) {
+            deleteImage(oldFilename);
+        }
         return saveImage(newImage);
     }
 }
