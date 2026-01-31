@@ -71,7 +71,6 @@ class AdControllerTest {
 
         // 2. Act - GET /ads/1
         mockMvc.perform(get("/ads/1"))
-
                 // 3. Assert - статус 200
                 .andExpect(status().isOk());
     }
