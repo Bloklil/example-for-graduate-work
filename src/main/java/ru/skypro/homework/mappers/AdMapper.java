@@ -9,6 +9,10 @@ import ru.skypro.homework.entities.AdEntity;
 import ru.skypro.homework.entities.UserEntity;
 import ru.skypro.homework.utils.ImageUrlUtils;
 
+/**
+ * Маппер для преобразования между сущностями AdEntity и DTO объявлений.
+ * Обеспечивает конвертацию данных между слоем базы данных и API.
+ */
 @Component
 @RequiredArgsConstructor
 public class AdMapper {

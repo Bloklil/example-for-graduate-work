@@ -22,6 +22,10 @@ import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
 
+/**
+ * Реализация сервиса для управления профилями пользователей.
+ * Обрабатывает бизнес-логику работы с пользователями, включая проверку прав доступа.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
 
+    /**
+     * Получает текущего аутентифицированного пользователя из контекста безопасности.
+     *
+     * @return сущность текущего пользователя
+     * @throws UserNotFoundException если пользователь не найден в базе данных
+     */
     private UserEntity getCurrentUserEntity() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -38,6 +48,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     */
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
@@ -46,6 +60,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userEntity);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Пользователь может обновлять только свой собственный профиль.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -62,6 +81,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(savedEntity);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Пользователь может изменять только свой собственный пароль.
+     * Проверяет корректность текущего пароля перед установкой нового.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -81,6 +106,12 @@ public class UserServiceImpl implements UserService {
         log.info("Password updated for user: {}", userEntity.getEmail());
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Пользователь может обновлять только свой собственный аватар.
+     * Удаляет старое изображение перед сохранением нового.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")

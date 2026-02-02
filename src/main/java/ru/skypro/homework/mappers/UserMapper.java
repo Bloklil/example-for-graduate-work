@@ -7,6 +7,10 @@ import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entities.UserEntity;
 import ru.skypro.homework.utils.ImageUrlUtils;
 
+/**
+ * Маппер для преобразования между сущностями UserEntity и DTO пользователей.
+ * Управляет конвертацией пользовательских данных между слоями приложения.
+ */
 @Component
 public class UserMapper {
     public UserDto toDto(UserEntity entity) {

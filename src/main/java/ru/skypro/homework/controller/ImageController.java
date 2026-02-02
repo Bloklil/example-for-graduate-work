@@ -14,6 +14,11 @@ import ru.skypro.homework.service.FileService;
 
 import java.io.IOException;
 
+/**
+ * Контроллер для работы с изображениями.
+ * Предоставляет эндпоинт для получения изображений по имени файла.
+ * Изображения возвращаются в формате JPEG с соответствующим Content-Type.
+ */
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(value = "http://localhost:3000")

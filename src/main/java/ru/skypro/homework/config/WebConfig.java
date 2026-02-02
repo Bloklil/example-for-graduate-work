@@ -5,6 +5,11 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Конфигурационный класс для настройки веб-слоя приложения.
+ * Определяет CORS политику и настраивает обработку статических ресурсов.
+ * Регистрирует обработчики для изображений и разрешает кросс-доменные запросы с фронтенда.
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

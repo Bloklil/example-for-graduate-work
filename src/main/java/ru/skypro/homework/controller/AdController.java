@@ -16,6 +16,11 @@ import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 
+/**
+ * Контроллер для работы с объявлениями (ads).
+ * Обрабатывает HTTP запросы связанные с созданием, получением, обновлением и удалением объявлений.
+ * Предоставляет REST API для управления объявлениями в системе.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/ads")

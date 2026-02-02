@@ -10,19 +10,35 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Реализация сервиса для работы с файлами изображений.
+ * Сохраняет изображения в директории 'images' в файловой системе.
+ * Обеспечивает безопасность доступа к файлам.
+ */
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService {
 
+    /** Название директории для хранения изображений */
     private static final String IMAGE_DIR = "images";
+    /** Путь к директории изображений */
     private final Path imageDir;
 
+    /**
+     * Конструктор создает директорию для изображений, если она не существует.
+     *
+     * @throws IOException если не удалось создать директорию
+     */
     public FileServiceImpl() throws IOException {
         this.imageDir = Paths.get(IMAGE_DIR).toAbsolutePath().normalize();
         Files.createDirectories(this.imageDir);
         log.info("Image directory: {}", this.imageDir);
     }
 
+    /**
+     * {@inheritDoc}
+     * Генерирует безопасное имя файла на основе временной метки и оригинального имени.
+     */
     @Override
     public String saveImage(MultipartFile image) throws IOException {
         String originalFilename = image.getOriginalFilename();
@@ -40,6 +56,10 @@ public class FileServiceImpl implements FileService {
         return safeFilename;
     }
 
+    /**
+     * {@inheritDoc}
+     * Выполняет проверку безопасности пути к файлу.
+     */
     @Override
     public byte[] getImage(String filename) throws IOException {
         Path filePath = this.imageDir.resolve(filename).normalize();
@@ -55,6 +75,10 @@ public class FileServiceImpl implements FileService {
         return Files.readAllBytes(filePath);
     }
 
+    /**
+     * {@inheritDoc}
+     * Выполняет проверку безопасности пути к файлу перед удалением.
+     */
     @Override
     public void deleteImage(String filename) throws IOException {
         Path filePath = this.imageDir.resolve(filename).normalize();
@@ -68,6 +92,10 @@ public class FileServiceImpl implements FileService {
         log.info("Image deleted: {}", filename);
     }
 
+    /**
+     * {@inheritDoc}
+     * Комбинирует удаление старого файла и сохранение нового.
+     */
     @Override
     public String updateImage(String oldFilename, MultipartFile newImage) throws IOException {
         if (oldFilename != null) {

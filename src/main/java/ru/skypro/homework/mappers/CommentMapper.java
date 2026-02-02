@@ -9,6 +9,10 @@ import ru.skypro.homework.utils.ImageUrlUtils;
 
 import java.time.Instant;
 
+/**
+ * Маппер для преобразования между сущностями CommentEntity и DTO комментариев.
+ * Обрабатывает конвертацию данных комментариев с учетом временных меток.
+ */
 @Component
 public class CommentMapper {
     public CommentDto toDto(CommentEntity entity) {

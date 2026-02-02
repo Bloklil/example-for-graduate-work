@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * DTO для создания или обновления объявления.
+ * Используется как входные данные для операций создания и обновления объявлений.
+ */
 @Data
 @Getter
 @Setter

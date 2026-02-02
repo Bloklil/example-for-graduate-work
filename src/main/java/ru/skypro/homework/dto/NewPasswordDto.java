@@ -3,6 +3,10 @@ package ru.skypro.homework.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+/**
+ * DTO для запроса на изменение пароля.
+ * Содержит текущий и новый пароль пользователя.
+ */
 @Data
 @Schema(description = "Change password request")
 public class NewPasswordDto {

@@ -7,6 +7,10 @@ import ru.skypro.homework.entities.UserEntity;
 
 import java.util.List;
 
+/**
+ * Репозиторий для работы с сущностями объявлений в базе данных.
+ * Расширяет JpaRepository и предоставляет кастомные методы для поиска объявлений.
+ */
 @Repository
 public interface AdRepository extends JpaRepository<AdEntity, Integer> {
 

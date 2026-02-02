@@ -12,6 +12,11 @@ import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
 
+/**
+ * Контроллер для управления профилями пользователей.
+ * Обрабатывает операции получения и обновления информации о пользователях,
+ * включая изменение пароля и аватара.
+ */
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor

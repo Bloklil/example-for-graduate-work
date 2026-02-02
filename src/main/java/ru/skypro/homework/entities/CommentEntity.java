@@ -5,6 +5,11 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.Instant;
 
+/**
+ * Сущность для представления комментариев в базе данных.
+ * Соответствует таблице 'comments' и содержит текст комментария,
+ * время создания и связи с пользователем и объявлением.
+ */
 @Entity
 @Table(name = "comments")
 @Data

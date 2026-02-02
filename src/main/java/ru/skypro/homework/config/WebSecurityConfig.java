@@ -18,6 +18,12 @@ import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Конфигурационный класс для настройки Spring Security.
+ * Определяет правила безопасности, аутентификации и авторизации для приложения.
+ * Настраивает JdbcUserDetailsManager для работы с пользователями в базе данных.
+ * Управляет доступом к различным эндпоинтам API в зависимости от ролей пользователей.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
