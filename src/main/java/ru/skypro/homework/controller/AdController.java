@@ -33,23 +33,13 @@ public class AdController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public AdDto addAd(
-            @RequestParam("title") String title,
-            @RequestParam("price") Integer price,
-            @RequestParam("description") String description,
+            @RequestPart("properties") CreateOrUpdateAdDto dto,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) throws IOException {
-        CreateOrUpdateAdDto dto = new CreateOrUpdateAdDto();
-        dto.setTitle(title);
-        dto.setPrice(price);
-        dto.setDescription(description);
-
         log.info("Создаём объявление: {}", dto);
         log.info("Файл изображения: {}", image != null ? image.getOriginalFilename() : "нет");
 
-        AdDto ad = adService.createAd(dto, image);
-
-        log.info("Объявление создано: {}", ad);
-        return ad;
+        return adService.createAd(dto, image);
     }
 
     @Operation(summary = "Get ad")
