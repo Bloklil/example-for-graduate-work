@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
@@ -35,6 +36,11 @@ public class UserController {
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateImage(@RequestParam("image") MultipartFile image) throws IOException {
         userService.updateUserImage(image);
+    }
+
+    @PostMapping("/me/password")
+    public void updatePassword(@RequestBody NewPasswordDto dto) {
+        userService.updatePassword(dto);
     }
 
 }

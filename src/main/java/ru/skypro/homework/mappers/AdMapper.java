@@ -19,7 +19,6 @@ public class AdMapper {
         AdDto dto = new AdDto();
         dto.setPk(entity.getId());
         dto.setAuthor(entity.getAuthor().getId());
-        dto.setImage(ImageUrlUtils.createImageUrl(entity.getImage()));
         dto.setPrice(entity.getPrice());
         dto.setTitle(entity.getTitle());
 

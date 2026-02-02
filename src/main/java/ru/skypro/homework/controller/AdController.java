@@ -77,7 +77,7 @@ public class AdController {
     @Operation(summary = "Get my ads")
     @GetMapping("/me")
     public AdsDto getMyAds() {
-        return adService.getAllAds();
+        return adService.getAdsByUser();
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

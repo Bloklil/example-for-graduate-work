@@ -87,17 +87,4 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
 }
