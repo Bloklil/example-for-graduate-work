@@ -1,5 +1,6 @@
 package ru.skypro.homework.mappers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
@@ -9,6 +10,7 @@ import ru.skypro.homework.entities.UserEntity;
 import ru.skypro.homework.utils.ImageUrlUtils;
 
 @Component
+@RequiredArgsConstructor
 public class AdMapper {
     public AdDto toDto(AdEntity entity) {
         if (entity == null) {
@@ -20,6 +22,13 @@ public class AdMapper {
         dto.setImage(ImageUrlUtils.createImageUrl(entity.getImage()));
         dto.setPrice(entity.getPrice());
         dto.setTitle(entity.getTitle());
+
+        if (entity.getImage() != null && !entity.getImage().isEmpty()) {
+            dto.setImage("/images/" + entity.getImage());
+        } else {
+            dto.setImage(null);
+        }
+
         return dto;
     }
 

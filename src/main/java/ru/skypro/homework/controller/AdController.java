@@ -2,6 +2,7 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequestMapping("/ads")
 @RequiredArgsConstructor
@@ -28,14 +30,26 @@ public class AdController {
         return adService.getAllAds();
     }
 
-    @Operation(summary = "Add ad")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public AdDto addAd(
-            @ModelAttribute CreateOrUpdateAdDto dto,
-            @RequestPart("image") MultipartFile image
+            @RequestParam("title") String title,
+            @RequestParam("price") Integer price,
+            @RequestParam("description") String description,
+            @RequestPart(value = "image", required = false) MultipartFile image
     ) throws IOException {
-        return adService.createAd(dto, image);
+        CreateOrUpdateAdDto dto = new CreateOrUpdateAdDto();
+        dto.setTitle(title);
+        dto.setPrice(price);
+        dto.setDescription(description);
+
+        log.info("Создаём объявление: {}", dto);
+        log.info("Файл изображения: {}", image != null ? image.getOriginalFilename() : "нет");
+
+        AdDto ad = adService.createAd(dto, image);
+
+        log.info("Объявление создано: {}", ad);
+        return ad;
     }
 
     @Operation(summary = "Get ad")

@@ -8,14 +8,6 @@ public class ImageUrlUtils {
         if (filename == null || filename.isEmpty()) {
             return null;
         }
-
-        try {
-            return ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/images/")
-                    .path(filename)
-                    .toUriString();
-        } catch (Exception e) {
-            return "/images/" + filename;
-        }
+        return "/images/" + filename;
     }
 }

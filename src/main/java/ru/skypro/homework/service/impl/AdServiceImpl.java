@@ -26,6 +26,9 @@ import ru.skypro.homework.service.FileService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -67,9 +70,6 @@ public class AdServiceImpl implements AdService {
     @Transactional
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public AdDto createAd(CreateOrUpdateAdDto createAdDto, MultipartFile image) throws IOException {
-        if (image == null || image.isEmpty()) {
-            throw new IllegalArgumentException("Image cannot be null or empty");
-        }
 
         UserEntity author = getCurrentUserEntity();
         AdEntity adEntity = adMapper.toEntity(createAdDto, author);
@@ -170,6 +170,18 @@ public class AdServiceImpl implements AdService {
         adEntity.setImage(filename);
         adRepository.save(adEntity);
         log.info("Image updated for ad: {} by user: {}", id, currentUser.getEmail());
+    }
+
+    public byte[] getAdImageById(Integer id) throws IOException {
+        AdEntity ad = adRepository.findById(id).orElse(null);
+        if (ad == null || ad.getImage() == null) {
+            return null;
+        }
+        Path imagePath = Paths.get("images", ad.getImage()); // папка images на уровне проекта
+        if (!Files.exists(imagePath)) {
+            return null;
+        }
+        return Files.readAllBytes(imagePath);
     }
 
 
