@@ -5,6 +5,10 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 
+/**
+ * DTO для передачи данных о пользователе.
+ * Содержит полную информацию о пользователе для отображения в API.
+ */
 @Data
 @Schema(description = "User")
 public class UserDto {

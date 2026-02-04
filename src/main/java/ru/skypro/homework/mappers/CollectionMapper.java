@@ -9,6 +9,10 @@ import ru.skypro.homework.entities.CommentEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Маппер для преобразования коллекций сущностей в соответствующие DTO.
+ * Специализируется на преобразовании списков объявлений и комментариев.
+ */
 @Component
 public class CollectionMapper {
     private final AdMapper adMapper;

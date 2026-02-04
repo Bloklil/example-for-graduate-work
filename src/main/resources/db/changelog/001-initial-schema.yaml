@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-1
+      author: your_name
+      changes:
+        - createTable:
+            tableName: users

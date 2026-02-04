@@ -16,6 +16,11 @@ import ru.skypro.homework.entities.UserEntity;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
+/**
+ * Контроллер для аутентификации и регистрации пользователей.
+ * Обрабатывает вход пользователей в систему и регистрацию новых аккаунтов.
+ * Использует Basic Authentication для авторизации.
+ */
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController

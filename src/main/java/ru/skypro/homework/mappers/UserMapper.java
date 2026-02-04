@@ -5,7 +5,12 @@ import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entities.UserEntity;
+import ru.skypro.homework.utils.ImageUrlUtils;
 
+/**
+ * Маппер для преобразования между сущностями UserEntity и DTO пользователей.
+ * Управляет конвертацией пользовательских данных между слоями приложения.
+ */
 @Component
 public class UserMapper {
     public UserDto toDto(UserEntity entity) {
@@ -16,7 +21,7 @@ public class UserMapper {
         dto.setLastName(entity.getLastName());
         dto.setPhone(entity.getPhone());
         dto.setRole(entity.getRole());
-        dto.setImage(entity.getImage());
+        dto.setImage(ImageUrlUtils.createImageUrl(entity.getImage()));
         return dto;
     }
 

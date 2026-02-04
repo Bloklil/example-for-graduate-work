@@ -8,6 +8,11 @@ import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.service.CommentService;
 
+/**
+ * Контроллер для работы с комментариями к объявлениям.
+ * Обрабатывает операции создания, получения, обновления и удаления комментариев.
+ * Комментарии привязаны к конкретным объявлениям через идентификатор ad.
+ */
 @RestController
 @RequestMapping("/ads")
 public class CommentController {

@@ -14,6 +14,10 @@ import ru.skypro.homework.mappers.UserMapper;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
+/**
+ * Реализация сервиса аутентификации и регистрации.
+ * Обрабатывает логику входа и регистрации пользователей.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,11 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws org.springframework.security.core.userdetails.UsernameNotFoundException если пользователь не найден
+     */
     @Override
     public boolean login(String userName, String password) {
         try {
@@ -35,6 +44,11 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalArgumentException если данные регистрации некорректны
+     */
     @Override
     public boolean register(Register register) {
         if (userRepository.existsByEmail(register.getUsername())) {

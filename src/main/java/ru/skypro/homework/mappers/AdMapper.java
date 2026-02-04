@@ -1,13 +1,20 @@
 package ru.skypro.homework.mappers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entities.AdEntity;
 import ru.skypro.homework.entities.UserEntity;
+import ru.skypro.homework.utils.ImageUrlUtils;
 
+/**
+ * Маппер для преобразования между сущностями AdEntity и DTO объявлений.
+ * Обеспечивает конвертацию данных между слоем базы данных и API.
+ */
 @Component
+@RequiredArgsConstructor
 public class AdMapper {
     public AdDto toDto(AdEntity entity) {
         if (entity == null) {
@@ -16,9 +23,15 @@ public class AdMapper {
         AdDto dto = new AdDto();
         dto.setPk(entity.getId());
         dto.setAuthor(entity.getAuthor().getId());
-        dto.setImage(entity.getImage());
         dto.setPrice(entity.getPrice());
         dto.setTitle(entity.getTitle());
+
+        if (entity.getImage() != null && !entity.getImage().isEmpty()) {
+            dto.setImage("/images/" + entity.getImage());
+        } else {
+            dto.setImage(null);
+        }
+
         return dto;
     }
 
@@ -31,7 +44,7 @@ public class AdMapper {
         dto.setTitle(entity.getTitle());
         dto.setPrice(entity.getPrice());
         dto.setDescription(entity.getDescription());
-        dto.setImage(entity.getImage());
+        dto.setImage(ImageUrlUtils.createImageUrl(entity.getImage()));
 
         UserEntity author = entity.getAuthor();
         if (author != null) {

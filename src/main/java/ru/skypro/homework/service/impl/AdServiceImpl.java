@@ -26,8 +26,15 @@ import ru.skypro.homework.service.FileService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Реализация сервиса для управления объявлениями.
+ * Обрабатывает бизнес-логику работы с объявлениями, включая проверку прав доступа.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,6 +45,12 @@ public class AdServiceImpl implements AdService {
     private final CollectionMapper collectionMapper;
     private final FileService fileService;
 
+    /**
+     * Получает текущего аутентифицированного пользователя из контекста безопасности.
+     *
+     * @return сущность текущего пользователя
+     * @throws UserNotFoundException если пользователь не найден в базе данных
+     */
     private UserEntity getCurrentUserEntity() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -45,6 +58,9 @@ public class AdServiceImpl implements AdService {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public AdsDto getAllAds() {
@@ -53,6 +69,10 @@ public class AdServiceImpl implements AdService {
         return collectionMapper.adsToDto(ads);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     */
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
@@ -63,13 +83,14 @@ public class AdServiceImpl implements AdService {
         return collectionMapper.adsToDto(userAds);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует роли USER или ADMIN.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public AdDto createAd(CreateOrUpdateAdDto createAdDto, MultipartFile image) throws IOException {
-        if (image == null || image.isEmpty()) {
-            throw new IllegalArgumentException("Image cannot be null or empty");
-        }
 
         UserEntity author = getCurrentUserEntity();
         AdEntity adEntity = adMapper.toEntity(createAdDto, author);
@@ -82,6 +103,9 @@ public class AdServiceImpl implements AdService {
         return adMapper.toDto(savedAd);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public ExtendedAdDto getAdById(Integer id) {
@@ -91,6 +115,11 @@ public class AdServiceImpl implements AdService {
         return adMapper.toExtendedDto(adEntity);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Проверяет права доступа: обновлять может только автор объявления или администратор.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -113,6 +142,12 @@ public class AdServiceImpl implements AdService {
         return adMapper.toDto(updatedAd);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Проверяет права доступа: удалять может только автор объявления или администратор.
+     * Также удаляет связанное изображение, если оно существует.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -137,11 +172,15 @@ public class AdServiceImpl implements AdService {
             }
         }
 
-
         adRepository.delete(adEntity);
         log.info("Ad deleted: {} by user: {}", id, currentUser.getEmail());
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Проверяет права доступа: обновлять изображение может только автор объявления или администратор.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -170,6 +209,22 @@ public class AdServiceImpl implements AdService {
         adEntity.setImage(filename);
         adRepository.save(adEntity);
         log.info("Image updated for ad: {} by user: {}", id, currentUser.getEmail());
+    }
+
+    /**
+     * {@inheritDoc}
+     * Используется для прямого доступа к файлам изображений.
+     */
+    public byte[] getAdImageById(Integer id) throws IOException {
+        AdEntity ad = adRepository.findById(id).orElse(null);
+        if (ad == null || ad.getImage() == null) {
+            return null;
+        }
+        Path imagePath = Paths.get("images", ad.getImage()); // папка images на уровне проекта
+        if (!Files.exists(imagePath)) {
+            return null;
+        }
+        return Files.readAllBytes(imagePath);
     }
 
 

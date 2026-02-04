@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Фильтр для добавления заголовков CORS при использовании Basic Authentication.
+ * Гарантирует, что заголовок Access-Control-Allow-Credentials установлен в true,
+ * что необходимо для работы аутентификации в кросс-доменных запросах.
+ */
 @Component
 public class BasicAuthCorsFilter extends OncePerRequestFilter {
 

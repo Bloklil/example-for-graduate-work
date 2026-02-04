@@ -8,6 +8,11 @@ import ru.skypro.homework.entities.CommentEntity;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Репозиторий для работы с сущностями комментариев в базе данных.
+ * Расширяет JpaRepository и предоставляет методы для работы с комментариями,
+ * связанными с конкретными объявлениями.
+ */
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 

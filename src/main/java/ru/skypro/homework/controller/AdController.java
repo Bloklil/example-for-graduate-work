@@ -2,8 +2,10 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
@@ -14,6 +16,12 @@ import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 
+/**
+ * Контроллер для работы с объявлениями (ads).
+ * Обрабатывает HTTP запросы связанные с созданием, получением, обновлением и удалением объявлений.
+ * Предоставляет REST API для управления объявлениями в системе.
+ */
+@Slf4j
 @RestController
 @RequestMapping("/ads")
 @RequiredArgsConstructor
@@ -27,13 +35,15 @@ public class AdController {
         return adService.getAllAds();
     }
 
-    @Operation(summary = "Add ad")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public AdDto addAd(
-            @ModelAttribute CreateOrUpdateAdDto dto,
-            @RequestPart("image") MultipartFile image
+            @RequestPart("properties") CreateOrUpdateAdDto dto,
+            @RequestPart(value = "image", required = false) MultipartFile image
     ) throws IOException {
+        log.info("Создаём объявление: {}", dto);
+        log.info("Файл изображения: {}", image != null ? image.getOriginalFilename() : "нет");
+
         return adService.createAd(dto, image);
     }
 
@@ -62,13 +72,15 @@ public class AdController {
     @Operation(summary = "Get my ads")
     @GetMapping("/me")
     public AdsDto getMyAds() {
-        return adService.getAllAds();
+        return adService.getAdsByUser();
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateImage(@PathVariable Integer id, @RequestPart("image") MultipartFile image)
-            throws IOException {
+    @Operation(summary = "Обновить изображение объявления")
+    public ResponseEntity<Void> updateImage(
+            @PathVariable Integer id,
+            @RequestPart("image") MultipartFile image) throws IOException {
         adService.updateAdImage(id, image);
+        return ResponseEntity.ok().build();
     }
-
 }

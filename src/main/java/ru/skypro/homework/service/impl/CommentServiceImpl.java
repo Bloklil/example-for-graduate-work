@@ -25,6 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
+/**
+ * Реализация сервиса для управления комментариями.
+ * Обрабатывает бизнес-логику работы с комментариями, включая проверку прав доступа.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,12 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final CollectionMapper collectionMapper;
 
+    /**
+     * Получает текущего аутентифицированного пользователя из контекста безопасности.
+     *
+     * @return сущность текущего пользователя
+     * @throws UserNotFoundException если пользователь не найден в базе данных
+     */
     private UserEntity getCurrentUserEntity() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -42,6 +52,9 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public CommentsDto getComments(Integer adId) {
@@ -53,6 +66,10 @@ public class CommentServiceImpl implements CommentService {
         return collectionMapper.commentsToDto(comments);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует роли USER или ADMIN.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -70,6 +87,11 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(savedComment);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Проверяет права доступа: обновлять может только автор комментария или администратор.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -96,6 +118,11 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(updatedComment);
     }
 
+    /**
+     * {@inheritDoc}
+     * Требует аутентификации пользователя.
+     * Проверяет права доступа: удалять может автор комментария, автор объявления или администратор.
+     */
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")

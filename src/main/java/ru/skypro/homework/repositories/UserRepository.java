@@ -6,6 +6,10 @@ import ru.skypro.homework.entities.UserEntity;
 
 import java.util.Optional;
 
+/**
+ * Репозиторий для работы с сущностями пользователей в базе данных.
+ * Расширяет JpaRepository и предоставляет методы для поиска пользователей по email.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
